@@ -1,9 +1,20 @@
-unit_test = executable(
-    'unit-test',
-    'UnitTest.vala',
-    dependencies: [
-    dependency('gio-unix-2.0', version: '>=2.20')
-    ]
+
+dependencies = [
+    dependency('gio-unix-2.0', version: '>=2.20'),
+]
+
+test('colord-test UnitTest',
+    executable(
+        'UnitTest',
+        'UnitTest.vala',
+        dependencies: dependencies
+    )
 )
 
-test('vala colord-test unit test', unit_test)
+test('colord-test DBus_initialisation',
+    executable(
+        'DBus_initialisation',
+        'DBus_initialisation.vala',
+        dependencies: dependencies
+    )
+)
