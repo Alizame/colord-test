@@ -102,3 +102,6 @@ executable(
     install: true
 )
 
+
+subdir('test')
+
