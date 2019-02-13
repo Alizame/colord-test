@@ -1,0 +1,85 @@
+<!-- GDBus 2.56.3 -->
+<node>
+    <interface name="org.freedesktop.DBus.Properties">
+        <method name="Get">
+            <arg type="s" name="interface_name" direction="in" />
+            <arg type="s" name="property_name" direction="in" />
+            <arg type="v" name="value" direction="out" />
+        </method>
+        <method name="GetAll">
+            <arg type="s" name="interface_name" direction="in" />
+            <arg type="a{sv}" name="properties" direction="out" />
+        </method>
+        <method name="Set">
+            <arg type="s" name="interface_name" direction="in" />
+            <arg type="s" name="property_name" direction="in" />
+            <arg type="v" name="value" direction="in" />
+        </method>
+        <signal name="PropertiesChanged">
+            <arg type="s" name="interface_name" />
+            <arg type="a{sv}" name="changed_properties" />
+            <arg type="as" name="invalidated_properties" />
+        </signal>
+    </interface>
+    <interface name="org.freedesktop.DBus.Introspectable">
+        <method name="Introspect">
+            <arg type="s" name="xml_data" direction="out" />
+        </method>
+    </interface>
+    <interface name="org.freedesktop.DBus.Peer">
+        <method name="Ping" />
+        <method name="GetMachineId">
+            <arg type="s" name="machine_uuid" direction="out" />
+        </method>
+    </interface>
+    <interface name="org.freedesktop.ColorManager.Device">
+        <method name="SetProperty">
+            <arg type="s" name="property_name" direction="in"></arg>
+            <arg type="s" name="property_value" direction="in"></arg>
+        </method>
+        <method name="AddProfile">
+            <arg type="s" name="relation" direction="in"></arg>
+            <arg type="o" name="object_path" direction="in"></arg>
+        </method>
+        <method name="RemoveProfile">
+            <arg type="o" name="object_path" direction="in"></arg>
+        </method>
+        <method name="MakeProfileDefault">
+            <arg type="o" name="profile_path" direction="in"></arg>
+        </method>
+        <method name="GetProfileForQualifiers">
+            <arg type="as" name="qualifiers" direction="in"></arg>
+            <arg type="o" name="object_path" direction="out"></arg>
+        </method>
+        <method name="GetProfileRelation">
+            <arg type="o" name="object_path" direction="in"></arg>
+            <arg type="s" name="relation" direction="out"></arg>
+        </method>
+        <method name="ProfilingInhibit"></method>
+        <method name="ProfilingUninhibit"></method>
+        <method name="SetEnabled">
+            <arg type="b" name="enabled" direction="in"></arg>
+        </method>
+        <signal name="Changed"></signal>
+        <property type="t" name="Created" access="read"></property>
+        <property type="t" name="Modified" access="read"></property>
+        <property type="s" name="Model" access="read"></property>
+        <property type="s" name="Serial" access="read"></property>
+        <property type="s" name="Vendor" access="read"></property>
+        <property type="s" name="Colorspace" access="read"></property>
+        <property type="s" name="Kind" access="read"></property>
+        <property type="s" name="DeviceId" access="read"></property>
+        <property type="ao" name="Profiles" access="read"></property>
+        <property type="s" name="Mode" access="read"></property>
+        <property type="s" name="Format" access="read"></property>
+        <property type="s" name="Scope" access="read"></property>
+        <property type="u" name="Owner" access="read"></property>
+        <property type="b" name="Enabled" access="read"></property>
+        <property type="s" name="Seat" access="read"></property>
+        <property type="b" name="Embedded" access="read"></property>
+        <property type="a{ss}" name="Metadata" access="read">
+            <annotation name="org.qtproject.QtDBus.QtTypeName" value="CdStringMap"></annotation>
+        </property>
+        <property type="as" name="ProfilingInhibitors" access="read"></property>
+    </interface>
+</node>
