@@ -90,7 +90,7 @@ message ('Adds files to build')
 
 code_files = files(
     'src/Application.vala',
-    'src/ColorManagerLib/ColorManagerDbusAPI/ColorManager.vala'
+    'src/ColorManagerLib/ColorManagerDbusAPI/ColorManagerD.vala'
 )
 
 message ('Defines executable')
