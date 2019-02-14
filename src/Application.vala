@@ -43,17 +43,49 @@ namespace colord_test {
             window.show_all ();
 
             try {
+                var d_devices = new ArrayList<org.freedesktop.Device>();
+                var d_profiles = new ArrayList<org.freedesktop.Profile>();
+
                 org.freedesktop.ColorManager cm = Bus.get_proxy_sync(
-                BusType.SYSTEM,
-                "org.freedesktop.ColorManager",
-                "/org/freedesktop/ColorManager"
+                    BusType.SYSTEM, // bus
+                    "org.freedesktop.ColorManager", // interface
+                    "/org/freedesktop/ColorManager" // objectpath
                 );
+                stdout.printf(" %s\n", cm.daemon_version.to_string());
+                stdout.printf(" %s\n", cm.system_model.to_string());
+                stdout.printf(" %s\n", cm.system_vendor.to_string());
+
 
                 print("GetDevices: \n");
 
-                ////////////////////////////////////////////////////////
-                var cm_devices = cm.get_devices(); // get device objectpath from dbus-interface
+                // get device objectpath from dbus-interface
+                var cm_devices = cm.get_devices();
 
+                foreach (var objpath_device in cm_devices) {
+                    org.freedesktop.Device dm = Bus.get_proxy_sync(
+                    BusType.SYSTEM, // bus
+                        "org.freedesktop.ColorManager", // interface
+                        objpath_device // objpath
+                    );
+                    d_devices.add(dm);
+
+                    stdout.printf(" %s: %s %s - %s - %s\n", dm.kind, dm.vendor, dm.model, dm.serial, dm.device_id);
+                }
+
+                print("GetProfiles: \n");
+                var cm_profiles = cm.get_profiles();
+
+                foreach (var objpath_profile in cm_profiles) {
+                    org.freedesktop.Profile pm = Bus.get_proxy_sync(
+                    BusType.SYSTEM, // bus
+                        "org.freedesktop.ColorManager", // interface
+                        objpath_profile // objpath
+                    );
+                    d_profiles.add(pm);
+
+                    //if (pm.kind == "display-device")
+                        stdout.printf(" %s: %s - objpath:%s\n", pm.kind, pm.title, objpath_profile);
+                }
 
             }
             catch (DBusError e) {
@@ -63,7 +95,7 @@ namespace colord_test {
                 error(e.message);
             }
 
-            print("End\n");
+            error("End\n");
         }
 
         public static int main (string[] args) {

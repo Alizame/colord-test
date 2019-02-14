@@ -25,12 +25,17 @@ add_global_arguments('-DGETTEXT_PACKAGE=\"@0@\"'.format (meson.project_name()), 
 # Adding deps
 message ('Listing dependencies')
 
-dependencies = [
-    dependency('gio-unix-2.0', version: '>=2.20'),
-    dependency('granite'),
-    dependency('colord', version : '>= 1.3.1'),
-    dependency('colord-gtk', version : '>= 0.1.20'),
 
+gio_dep = dependency('gio-unix-2.0', version: '>=2.20')
+granite_dep = dependency('granite')
+colord_dep = dependency('colord', version : '>= 1.3.1')
+colord_gtk_dep = dependency('colord-gtk', version : '>= 0.1.20')
+
+dependencies = [
+    gio_dep,
+    granite_dep,
+    colord_dep,
+    colord_gtk_dep,
 ]
 
 # Adds subfolders specific build system
@@ -90,7 +95,7 @@ message ('Adds files to build')
 
 code_files = files(
     'src/Application.vala',
-    'src/ColorManagerLib/ColorManagerDbusAPI/ColorManagerD.vala'
+    'lib/ColorManager/ColorManagerDbus/ColorManagerDbus.vala'
 )
 
 message ('Defines executable')
@@ -102,6 +107,6 @@ executable(
     install: true
 )
 
-
+subdir('lib')
 subdir('test')
 
