@@ -16,7 +16,7 @@ class DBus_initialisation : GLib.Object {
             assert(cm.system_model != null);
             assert(cm.system_vendor != null);
         }
-        catch (Error e) {
+        catch (IOError e) {
             error(e.message);
         }
 
