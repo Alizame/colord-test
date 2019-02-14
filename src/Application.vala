@@ -95,7 +95,7 @@ namespace colord_test {
                 error(e.message);
             }
 
-            error("End\n");
+            Process.exit(0);
         }
 
         public static int main (string[] args) {
