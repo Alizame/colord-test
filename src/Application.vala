@@ -46,20 +46,22 @@ namespace colord_test {
                 var d_devices = new ArrayList<org.freedesktop.Device>();
                 var d_profiles = new ArrayList<org.freedesktop.Profile>();
 
-                org.freedesktop.ColorManager cm = Bus.get_proxy_sync(
-                    BusType.SYSTEM, // bus
-                    "org.freedesktop.ColorManager", // interface
-                    "/org/freedesktop/ColorManager" // objectpath
-                );
-                stdout.printf(" %s\n", cm.daemon_version.to_string());
+                lib.ColorManager l_cm = new lib.ColorManager();
+
+                org.freedesktop.ColorManager cm = l_cm.get_d_cm();
+                /*stdout.printf(" %s\n", cm.daemon_version.to_string());
                 stdout.printf(" %s\n", cm.system_model.to_string());
-                stdout.printf(" %s\n", cm.system_vendor.to_string());
+                stdout.printf(" %s\n", cm.system_vendor.to_string());*/
+                stdout.printf(" %s\n", l_cm.to_string());
 
 
                 print("GetDevices: \n");
+                foreach (var dev in l_cm.getDevices()) {
+                    stdout.printf(" %s\n", dev.to_string());
+                }
 
                 // get device objectpath from dbus-interface
-                var cm_devices = cm.get_devices();
+                /*var cm_devices = cm.get_devices();
 
                 foreach (var objpath_device in cm_devices) {
                     org.freedesktop.Device dm = Bus.get_proxy_sync(
@@ -70,10 +72,13 @@ namespace colord_test {
                     d_devices.add(dm);
 
                     stdout.printf(" %s: %s %s - %s - %s\n", dm.kind, dm.vendor, dm.model, dm.serial, dm.device_id);
-                }
+                }*/
 
                 print("GetProfiles: \n");
-                var cm_profiles = cm.get_profiles();
+                foreach (var prof in l_cm.getProfiles()) {
+                    stdout.printf(" %s\n", prof.to_string());
+                }
+                /*var cm_profiles = cm.get_profiles();
 
                 foreach (var objpath_profile in cm_profiles) {
                     org.freedesktop.Profile pm = Bus.get_proxy_sync(
@@ -85,7 +90,7 @@ namespace colord_test {
 
                     //if (pm.kind == "display-device")
                         stdout.printf(" %s: %s - objpath:%s\n", pm.kind, pm.title, objpath_profile);
-                }
+                }*/
 
             }
             catch (DBusError e) {

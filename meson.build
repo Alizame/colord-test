@@ -95,6 +95,7 @@ message ('Adds files to build')
 
 code_files = files(
     'src/Application.vala',
+    'lib/ColorManager/ColorManagerFacade.vala',
     'lib/ColorManager/ColorManagerDbus/ColorManagerDbus.vala'
 )
 
@@ -109,4 +110,3 @@ executable(
 
 subdir('lib')
 subdir('test')
-
