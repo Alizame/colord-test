@@ -37,60 +37,50 @@ namespace colord_test {
             var window = new Gtk.ApplicationWindow (this);
             var main = new Gtk.Grid ();
 
+
+            var listmodel_devices = new Gtk.ListStore(1, typeof(string));
+            var listmodel_profiles = new Gtk.ListStore(1, typeof(string));
+
+            var view_devices = new TreeView();
+            var view_profiles = new TreeView();
+            view_devices.set_model(listmodel_devices);
+            view_profiles.set_model(listmodel_profiles);
+
+            view_devices.insert_column_with_attributes(-1, "Devices", new CellRendererText (), "text", 0);
+            view_profiles.insert_column_with_attributes(-1, "Profiles", new CellRendererText (), "text", 0);
+            main.attach (view_devices, 0, 0, 1, 1);
+            main.attach (view_profiles, 1, 0, 1, 1);
+
+
+
             window.set_title("colord-test");
-            window.set_default_size (300, 300);
+            window.set_default_size (600, 300);
             window.add (main);
             window.show_all ();
 
+
             try {
-                var d_devices = new ArrayList<org.freedesktop.Device>();
-                var d_profiles = new ArrayList<org.freedesktop.Profile>();
+
 
                 lib.ColorManager l_cm = new lib.ColorManager();
-
-                org.freedesktop.ColorManager cm = l_cm.get_d_cm();
-                /*stdout.printf(" %s\n", cm.daemon_version.to_string());
-                stdout.printf(" %s\n", cm.system_model.to_string());
-                stdout.printf(" %s\n", cm.system_vendor.to_string());*/
                 stdout.printf(" %s\n", l_cm.to_string());
 
-
+                TreeIter d_iter;
                 print("GetDevices: \n");
                 foreach (var dev in l_cm.getDevices()) {
                     stdout.printf(" %s\n", dev.to_string());
+                    listmodel_devices.append (out d_iter);
+                    listmodel_devices.set (d_iter, 0, dev.to_string());
                 }
 
-                // get device objectpath from dbus-interface
-                /*var cm_devices = cm.get_devices();
-
-                foreach (var objpath_device in cm_devices) {
-                    org.freedesktop.Device dm = Bus.get_proxy_sync(
-                    BusType.SYSTEM, // bus
-                        "org.freedesktop.ColorManager", // interface
-                        objpath_device // objpath
-                    );
-                    d_devices.add(dm);
-
-                    stdout.printf(" %s: %s %s - %s - %s\n", dm.kind, dm.vendor, dm.model, dm.serial, dm.device_id);
-                }*/
-
+                TreeIter p_iter;
                 print("GetProfiles: \n");
                 foreach (var prof in l_cm.getProfiles()) {
                     stdout.printf(" %s\n", prof.to_string());
+                    listmodel_profiles.append (out p_iter);
+                    listmodel_profiles.set (p_iter, 0, prof.to_string());
                 }
-                /*var cm_profiles = cm.get_profiles();
 
-                foreach (var objpath_profile in cm_profiles) {
-                    org.freedesktop.Profile pm = Bus.get_proxy_sync(
-                    BusType.SYSTEM, // bus
-                        "org.freedesktop.ColorManager", // interface
-                        objpath_profile // objpath
-                    );
-                    d_profiles.add(pm);
-
-                    //if (pm.kind == "display-device")
-                        stdout.printf(" %s: %s - objpath:%s\n", pm.kind, pm.title, objpath_profile);
-                }*/
 
             }
             catch (DBusError e) {
@@ -100,7 +90,7 @@ namespace colord_test {
                 error(e.message);
             }
 
-            Process.exit(0);
+
         }
 
         public static int main (string[] args) {
