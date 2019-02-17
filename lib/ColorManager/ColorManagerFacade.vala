@@ -93,6 +93,9 @@ namespace lib {
             return " %s: %s %s - %s - %s".printf(kind, vendor, model, serial, device_id);
 
         }
+        public ObjectPath get_objectpath() {
+            return this.path;
+        }
 
         public Device(ObjectPath path) throws IOError {
             this.path = path;
