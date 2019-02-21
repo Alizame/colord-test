@@ -78,7 +78,7 @@ namespace colord_test {
             try {
 
 
-                lib.ColorManager l_cm = new lib.ColorManager();
+                ColorManager.ColorManager l_cm = new ColorManager.ColorManager();
                 stdout.printf(" %s\n", l_cm.to_string());
 
                 Gtk.TreeIter d_iter;

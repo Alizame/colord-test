@@ -25,13 +25,14 @@ add_global_arguments('-DGETTEXT_PACKAGE=\"@0@\"'.format (meson.project_name()), 
 # Adding deps
 message ('Listing dependencies')
 
-
+gee_dep = dependency('gee-0.8', version: '>=0.20.1')
 gio_dep = dependency('gio-unix-2.0', version: '>=2.20')
 granite_dep = dependency('granite')
 colord_dep = dependency('colord', version : '>= 1.3.1')
 colord_gtk_dep = dependency('colord-gtk', version : '>= 0.1.20')
 
 dependencies = [
+    gee_dep,
     gio_dep,
     granite_dep,
     colord_dep,
@@ -95,7 +96,9 @@ message ('Adds files to build')
 
 code_files = files(
     'src/Application.vala',
-    'lib/ColorManager/ColorManagerFacade.vala',
+    'lib/ColorManager/ColorManager.vala',
+    'lib/ColorManager/Device.vala',
+    'lib/ColorManager/Profile.vala',
     'lib/ColorManager/ColorManagerDbus/ColorManagerDbus.vala'
 )
 
@@ -110,3 +113,4 @@ executable(
 
 subdir('lib')
 subdir('test')
+

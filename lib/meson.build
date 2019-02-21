@@ -1,6 +1,8 @@
 lib_files = files(
     'ColorManager/ColorManagerDbus/ColorManagerDbus.vala',
-    'ColorManager/ColorManagerFacade.vala',
+    'ColorManager/ColorManager.vala',
+    'ColorManager/Device.vala',
+    'ColorManager/Profile.vala',
 )
 
 lib_deps = [
