@@ -1,11 +1,10 @@
 using Gee;
 
-namespace ColorManager {
-    errordomain KindMismatch {
+namespace Color {
+    public errordomain KindMismatchError {
         DeviceProfile
     }
-
-    errordomain NotFound {
+    public errordomain NotFoundError {
         Device,
         Profile
     }
@@ -19,24 +18,14 @@ namespace ColorManager {
          *
          */
 
-
+        /* Fields */
         private org.freedesktop.ColorManager d_cm;
         private ArrayList<Device> devices;
         private ArrayList<Profile> profiles;
 
-        public string to_string() {
-            string version = d_cm.daemon_version.to_string();
-            string model = d_cm.system_model.to_string();
-            string vendor = d_cm.system_vendor.to_string();
 
-            return "colord.ColorManager ver:%s model:%s vendor:%s".printf(version, model, vendor);
-        }
-
-        public org.freedesktop.ColorManager get_d_cm() {
-            return this.d_cm;
-        }
-
-        public ColorManager() throws IOError {
+        /* Constructor */
+        public ColorManager() throws IOError, DBusError {
             this.d_cm = Bus.get_proxy_sync(
                 BusType.SYSTEM, // bus
                 "org.freedesktop.ColorManager", // interface
@@ -47,6 +36,21 @@ namespace ColorManager {
             d_cm.changed.connect(on_change); // connect our on_change method to dbus change signal
         }
 
+
+        /* Methods */
+
+        /* Returns string representation of this object.
+         * @returns string
+         */
+        public string to_string() {
+            string version = d_cm.daemon_version.to_string();
+            string model = d_cm.system_model.to_string();
+            string vendor = d_cm.system_vendor.to_string();
+
+            return "colord.ColorManager ver:%s model:%s vendor:%s".printf(version, model, vendor);
+        }
+
+
         /**
          * This is connected to the change-signal of the dbus-api.
          * It reloads all devices and profiles
@@ -54,20 +58,26 @@ namespace ColorManager {
          * new/changed things)
          *
          */
-        private void on_change() {
+        private void on_change()  {
             // reload all devices and profiles.
+            try {
+                // get_devices
+                this.devices = new ArrayList<Device>();
 
-            // get_devices
-            this.devices = new ArrayList<Device>();
+                var devices = this.d_cm.get_devices();
 
-            var devices = this.d_cm.get_devices();
+                foreach (var objpath_device in devices) {
+                    var new_device = new Device(objpath_device);
+                    this.devices.add(new_device);
+                }
 
-            foreach (var objpath_device in devices) {
-                var new_device = new Device(objpath_device);
-                this.devices.add(new_device);
+                // get_profiles
+            } catch (IOError e) {
+                warning("IOError in ColorManager.on_change: " + e.message);
+            } catch (DBusError e) {
+                warning("DBusError in ColorManager.on_change: " + e.message);
+
             }
-
-            // get_profiles
         }
 
 
@@ -79,6 +89,21 @@ namespace ColorManager {
         public ArrayList<Device> getDevices() throws IOError, DBusError {
             return this.devices;
         }
+
+        /* Try's to find the Device-instance for a given ObjectPath.
+         *
+         * @return Device-instance for ObjectPath
+         * @throws NotFoundError.Device if no corresponding Device is found
+         */
+        public Device getDevice(ObjectPath op) throws NotFoundError {
+            foreach (Device d in devices) {
+                if (d.get_objectpath() == op) {
+                    return d;
+                }
+            }
+            throw new NotFoundError.Device("No Device-instance found for ObjectPath " + op.to_string());
+        }
+
 
         /**
          * Get's an ArrayList of all profiles.
@@ -98,11 +123,21 @@ namespace ColorManager {
             return ret_profiles;
         }
 
-
-
-        public static Device getDevice(ObjectPath op) {
-            return null;
+        /* Try's to find the Profile-instance for a given ObjectPath.
+         *
+         * @return Profile-instance for ObjectPath
+         * @throws NotFoundError.Profile if no corresponding Profile is found
+         */
+        public Profile getProfile(ObjectPath op) throws NotFoundError {
+            foreach (Profile p in profiles) {
+                if (p.get_objectpath() == op) {
+                    return p;
+                }
+            }
+            throw new NotFoundError.Profile("No Profile-instance found for ObjectPath " + op.to_string());
         }
+
+
     }
 
 

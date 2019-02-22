@@ -1,6 +1,6 @@
 using Gee;
 
-namespace ColorManager {
+namespace Color {
 
 
     public class Device : Object {
@@ -20,6 +20,7 @@ namespace ColorManager {
             PRINTER,
             CAMERA;
 
+            //ToDo: needs to move into Application?+
             public string get_icon_str() {
                 switch (this) {
                     case UNKNOWN:
@@ -39,7 +40,21 @@ namespace ColorManager {
             }
         }
 
-
+        // Todo: Add:
+        //          - owner uint : this only the UID of the user ;(
+        //          - embedded bool
+        //          - seat string
+        //          - colourspace string
+        //          - metadata HashTable<string string>
+        //
+        //          - _getProfiles() : returns arraylist of Profile-ObjectPath-ArrayList,internal only
+        //          - getProfiles() : return ArrayList of Profile instances that this device uses
+        //          -
+        //
+        // don't add:
+        //          - Mode (virtual, physicalm unknown) : even colormgr doesn't show this
+        //          - scope (normal, temp, disk) : what is this?
+        /* Fields */
         private ObjectPath path;
         private org.freedesktop.Device d;
 
@@ -50,14 +65,14 @@ namespace ColorManager {
         private string serial;
         private string device_id;
 
-        public string to_string() {
-            return " %s: %s %s - %s - %s".printf(kind.to_string(), vendor, model, serial, device_id);
+        private uint owner;
+        private bool embedded;
+        private string seat;
+        private string colorspace;
+        private HashTable<string, string> metadata; // public void HashMap
 
-        }
-        public ObjectPath get_objectpath() {
-            return this.path;
-        }
 
+        /* Constructor */
         public Device(ObjectPath path) throws IOError {
             this.path = path;
 
@@ -90,6 +105,15 @@ namespace ColorManager {
         }
 
 
+        /* Methods */
+        public string to_string() {
+            return " %s %s - %s".printf(vendor, model, serial);
+
+        }
+        public ObjectPath get_objectpath() {
+            return this.path;
+        }
+
         public void addProfile(Profile p) throws Error {
             // this is user-defined, so it is always a "hard" relation.
             this.d.add_profile("hard", p.get_objectpath());
@@ -104,6 +128,8 @@ namespace ColorManager {
         public void setDefaultProfile(Profile p) {
 
         }
+
+
 
     }
 
