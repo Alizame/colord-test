@@ -40,6 +40,11 @@ namespace colord_test {
         protected override void activate () {
             var window = new Gtk.ApplicationWindow (this);
             var main = new Gtk.Grid ();
+            main.orientation = Gtk.Orientation.VERTICAL;
+            main.halign = Gtk.Align.CENTER;
+            main.column_spacing = 24;
+            main.row_spacing = 12;
+            main.margin = 12;
 
 
 
