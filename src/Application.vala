@@ -25,8 +25,8 @@ using Gee;
 
 namespace colord_test {
     public class Application : Granite.Application {
-        private Gtk.ListStore listmodel_devices = new Gtk.ListStore (2, typeof (string), typeof (string));
-        private Gtk.ListStore listmodel_profiles = new Gtk.ListStore (2, typeof (string), typeof (string));
+        private Gtk.ListStore listmodel_devices = new Gtk.ListStore (2, typeof (string), typeof (Color.Device));
+        private Gtk.ListStore listmodel_profiles = new Gtk.ListStore (2, typeof (string), typeof (Color.Profile));
         private Gtk.ComboBox view_devices;
         private Gtk.ComboBox view_profiles;
 
@@ -86,7 +86,7 @@ namespace colord_test {
                 foreach (var dev in l_cm.getDevices()) {
                     stdout.printf(" %s\n", dev.to_string());
                     listmodel_devices.append (out d_iter);
-                    listmodel_devices.set (d_iter, 0, dev.to_string(), 1, dev.get_objectpath());
+                    listmodel_devices.set (d_iter, 0, dev.to_string(), 1, dev);
                 }
 
                 Gtk.TreeIter p_iter;
@@ -94,7 +94,7 @@ namespace colord_test {
                 foreach (var prof in l_cm.getProfiles()) {
                     stdout.printf(" %s\n", prof.to_string());
                     listmodel_profiles.append (out p_iter);
-                    listmodel_profiles.set (p_iter, 0, prof.to_string(), 1, prof.get_objectpath());
+                    listmodel_profiles.set (p_iter, 0, prof.to_string(), 1, prof);
                 }
 
 
@@ -111,23 +111,23 @@ namespace colord_test {
         private void sel_device_changed()
         {
             Gtk.TreeIter iter;
-            Value val;
+            GLib.Value val;
 
             view_devices.get_active_iter(out iter);
             listmodel_devices.get_value(iter, 1, out val);
 
-            stdout.printf("Device sel is '%s'\n", (string) val);
+            stdout.printf("Device sel is '%s'\n", ((Color.Device) val).get_objectpath());
         }
 
         private void sel_profile_changed()
         {
             Gtk.TreeIter iter;
-            Value val;
+            GLib.Value val;
 
             view_profiles.get_active_iter(out iter);
             listmodel_profiles.get_value(iter, 1, out val);
 
-            stdout.printf("Profile sel is '%s'\n", (string) val);
+            stdout.printf("Profile sel is '%s'\n", ((Color.Profile) val).get_objectpath());
         }
 
         public static int main (string[] args) {
