@@ -41,19 +41,45 @@ namespace Color {
         }
 
         // Todo: Add:
-        //          - owner uint : this only the UID of the user ;(
-        //          - embedded bool
-        //          - seat string
-        //          - colourspace string
-        //          - metadata HashTable<string string>
-        //
         //          - _getProfiles() : returns arraylist of Profile-ObjectPath-ArrayList,internal only
         //          - getProfiles() : return ArrayList of Profile instances that this device uses
-        //          -
-        //
         // don't add:
         //          - Mode (virtual, physicalm unknown) : even colormgr doesn't show this
         //          - scope (normal, temp, disk) : what is this?
+
+
+        private ObjectPath[] _getProfiles() {
+            return this.d.profiles;
+        }
+
+        public ArrayList<Profile> getProfiles() {
+            ArrayList<Profile> p_list = new ArrayList<Profile>();
+
+            var op_list = _getProfiles();
+            stdout.printf("profiles of %s\n", this.to_string());
+            foreach (var p_op in op_list) {
+                try {
+                    Profile p = ColorManager.getProfile(p_op);
+                    p_list.add(p);
+                    stdout.printf("\t%s\n", (string) p_op);
+                } catch (NotFoundError e) {
+                    warning("Profile not found: " + (string) p_op);
+                    // Profile doesn't exist anymore?, this should not be possible
+                }
+            }
+            /*for (int i=0; i< op_list.length; i++) {
+                try {
+                    Profile p = ColorManager.getProfile(op_list[i]);
+                    p_list.add(p);
+                    stdout.printf("\t%s\n", (string) op_list[i]);
+                } catch (NotFoundError e) {
+                    // Profile doesn't exist anymore?, this should not be possible
+                }
+            }*/
+
+            return p_list;
+        }
+
         /* Fields */
         private ObjectPath path;
         private org.freedesktop.Device d;
@@ -82,8 +108,9 @@ namespace Color {
                 this.path // objpath
             );
 
+
             //this.kind = this.d.kind;
-            switch (this.d.kind) {
+            switch (d.kind) {
                 case "display":
                     this.kind = Kind.DISPLAY; break;
                 case "scanner":
@@ -97,11 +124,17 @@ namespace Color {
             }
 
 
-            this.vendor = this.d.vendor;
-            this.model = this.d.model;
-            this.serial = this.d.serial;
-            this.device_id = this.d.device_id;
-            this.enabled = this.d.enabled;
+            this.vendor = d.vendor;
+            this.model = d.model;
+            this.serial = d.serial;
+            this.device_id = d.device_id;
+            this.enabled = d.enabled;
+
+            this.owner = d.owner;
+            this.embedded = d.embedded;
+            this.seat = d.seat;
+            this.colorspace = d.colorspace;
+            this.metadata = d.metadata;
         }
 
 

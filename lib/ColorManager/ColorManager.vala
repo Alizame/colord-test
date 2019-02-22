@@ -19,21 +19,32 @@ namespace Color {
          */
 
         /* Fields */
-        private org.freedesktop.ColorManager d_cm;
-        private ArrayList<Device> devices;
-        private ArrayList<Profile> profiles;
+        private static org.freedesktop.ColorManager d_cm;
+        private static ArrayList<Device> devices = new ArrayList<Device>();
+        private static ArrayList<Profile> profiles = new ArrayList<Profile>();
 
+        /* static initializer */
+        static construct {
+            //stdout.printf ("ColorManager init invoked.\n");
+
+            try {
+                d_cm = Bus.get_proxy_sync(
+                    BusType.SYSTEM, // bus
+                    "org.freedesktop.ColorManager", // interface
+                    "/org/freedesktop/ColorManager" // objectpath
+                );
+
+                on_change(); // fire on_change "manually" to initially fill arrays etc.
+                d_cm.changed.connect(on_change); // connect our on_change method to dbus change signal
+            } catch (IOError e) {
+                critical("Couldn't initialize ColorD: IOError: " + e.message);
+            } catch (DBusError e) {
+                critical("Couldn't initialize ColorD: DBusError: " + e.message);
+            }
+        }
 
         /* Constructor */
-        public ColorManager() throws IOError, DBusError {
-            this.d_cm = Bus.get_proxy_sync(
-                BusType.SYSTEM, // bus
-                "org.freedesktop.ColorManager", // interface
-                "/org/freedesktop/ColorManager" // objectpath
-            );
-
-            on_change();
-            d_cm.changed.connect(on_change); // connect our on_change method to dbus change signal
+        public ColorManager() {
         }
 
 
@@ -58,20 +69,30 @@ namespace Color {
          * new/changed things)
          *
          */
-        private void on_change()  {
+        private static void on_change()  {
             // reload all devices and profiles.
             try {
                 // get_devices
-                this.devices = new ArrayList<Device>();
+                devices.clear();
 
-                var devices = this.d_cm.get_devices();
+                var cm_devices = d_cm.get_devices();
 
-                foreach (var objpath_device in devices) {
-                    var new_device = new Device(objpath_device);
-                    this.devices.add(new_device);
+                foreach (var device_op in cm_devices) {
+                    var device = new Device(device_op);
+                    devices.add(device);
+                    //stdout.printf(" Found Device %s\n", device.to_string());
                 }
 
                 // get_profiles
+                profiles.clear();
+
+                var cm_profiles = d_cm.get_profiles();
+
+                foreach (var profile_op in cm_profiles) {
+                    var profile = new Profile(profile_op);
+                    profiles.add(profile);
+                    //stdout.printf(" Found Profile %s\n", profile.to_string());
+                }
             } catch (IOError e) {
                 warning("IOError in ColorManager.on_change: " + e.message);
             } catch (DBusError e) {
@@ -87,7 +108,7 @@ namespace Color {
          * @return list of all devices.
          */
         public ArrayList<Device> getDevices() throws IOError, DBusError {
-            return this.devices;
+            return devices;
         }
 
         /* Try's to find the Device-instance for a given ObjectPath.
@@ -113,7 +134,7 @@ namespace Color {
         public ArrayList<Profile> getProfiles() throws IOError, DBusError {
             ArrayList<Profile> ret_profiles = new ArrayList<Profile>();
 
-            var profiles = this.d_cm.get_profiles();
+            var profiles = d_cm.get_profiles();
 
             foreach (var objpath_profile in profiles) {
                 var new_profile = new Profile(objpath_profile);
@@ -128,7 +149,7 @@ namespace Color {
          * @return Profile-instance for ObjectPath
          * @throws NotFoundError.Profile if no corresponding Profile is found
          */
-        public Profile getProfile(ObjectPath op) throws NotFoundError {
+        public static Profile getProfile(ObjectPath op) throws NotFoundError {
             foreach (Profile p in profiles) {
                 if (p.get_objectpath() == op) {
                     return p;

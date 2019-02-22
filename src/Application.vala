@@ -82,17 +82,18 @@ namespace colord_test {
                 stdout.printf(" %s\n", l_cm.to_string());
 
                 Gtk.TreeIter d_iter;
-                print("GetDevices: \n");
+                //print("GetDevices: \n");
                 foreach (var dev in l_cm.getDevices()) {
-                    stdout.printf(" %s\n", dev.to_string());
+                    dev.getProfiles();
+                    //stdout.printf(" %s\n", dev.to_string());
                     listmodel_devices.append (out d_iter);
                     listmodel_devices.set (d_iter, 0, dev.to_string(), 1, dev);
                 }
 
                 Gtk.TreeIter p_iter;
-                print("GetProfiles: \n");
+                //print("GetProfiles: \n");
                 foreach (var prof in l_cm.getProfiles()) {
-                    stdout.printf(" %s\n", prof.to_string());
+                    //stdout.printf(" %s\n", prof.to_string());
                     listmodel_profiles.append (out p_iter);
                     listmodel_profiles.set (p_iter, 0, prof.to_string(), 1, prof);
                 }
