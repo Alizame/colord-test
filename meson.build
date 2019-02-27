@@ -30,13 +30,14 @@ gio_dep = dependency('gio-unix-2.0', version: '>=2.20')
 granite_dep = dependency('granite')
 colord_dep = dependency('colord', version : '>= 1.3.1')
 colord_gtk_dep = dependency('colord-gtk', version : '>= 0.1.20')
-
+subdir('lib') # lib_dep
 dependencies = [
     gee_dep,
     gio_dep,
     granite_dep,
     colord_dep,
     colord_gtk_dep,
+    lib_dep
 ]
 
 # Adds subfolders specific build system
@@ -96,10 +97,8 @@ message ('Adds files to build')
 
 code_files = files(
     'src/Application.vala',
-    'lib/ColorManager/ColorManager.vala',
-    'lib/ColorManager/Device.vala',
-    'lib/ColorManager/Profile.vala',
-    'lib/ColorManager/ColorManagerDbus/ColorManagerDbus.vala'
+    'src/Color.vala',
+
 )
 
 message ('Defines executable')
@@ -111,6 +110,5 @@ executable(
     install: true
 )
 
-subdir('lib')
 subdir('test')
 

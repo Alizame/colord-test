@@ -7,7 +7,7 @@ lib_files = files(
 
 lib_deps = [
     gio_dep,
-    dependency('gee-0.8', version: '>=0.20.1')
+    gee_dep
 ]
 
 lib_library = shared_library(
