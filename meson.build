@@ -97,8 +97,6 @@ message ('Adds files to build')
 
 code_files = files(
     'src/Application.vala',
-    'src/Color.vala',
-
 )
 
 message ('Defines executable')

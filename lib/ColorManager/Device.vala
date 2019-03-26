@@ -56,12 +56,12 @@ namespace Color {
             ArrayList<Profile> p_list = new ArrayList<Profile>();
 
             var op_list = _getProfiles();
-            stdout.printf("profiles of %s\n", this.to_string());
+            //stdout.printf("profiles of %s\n", this.to_string());
             foreach (var p_op in op_list) {
                 try {
                     Profile p = ColorManager.getProfile(p_op);
                     p_list.add(p);
-                    stdout.printf("\t%s\n", (string) p_op);
+                    //stdout.printf("\t%s\n", (string) p_op);
                 } catch (NotFoundError e) {
                     warning("Profile not found: " + (string) p_op);
                     // Profile doesn't exist anymore?, this should not be possible
@@ -140,7 +140,7 @@ namespace Color {
 
         /* Methods */
         public string to_string() {
-            return " %s %s - %s".printf(vendor, model, serial);
+            return " %s %s - S/N:%s".printf(vendor, model, serial);
 
         }
         public ObjectPath get_objectpath() {

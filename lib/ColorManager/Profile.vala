@@ -11,6 +11,8 @@ namespace Color {
         private string kind; // enum kind?
         private string title;
 
+        private string profile_id;
+
         private uint owner;
         private string format;
         private string qualifier;
@@ -18,6 +20,8 @@ namespace Color {
         private bool has_vcgt;
         private bool is_system_wide;
 
+        // add:
+        //          - Kind enum
         // don't add:
         //          - Mode (virtual, physical unknown) : even colormgr doesn't show this
 
@@ -37,6 +41,8 @@ namespace Color {
             this.kind = p.kind;
             this.title = p.title;
 
+            this.profile_id = p.profile_id;
+
             this.owner = p.owner;
             this.format = p.format;
             this.qualifier = p.qualifier;
@@ -49,7 +55,7 @@ namespace Color {
 
         /* Methods */
         public string to_string() {
-            return " %s: %s".printf(kind, title);
+            return " [%s]: [colorspace: %s] %s (%s)".printf(kind, colorspace, title, profile_id);
         }
 
         public ObjectPath get_objectpath() {
